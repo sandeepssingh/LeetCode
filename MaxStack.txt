@@ -1,0 +1,54 @@
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string> 
+#include<queue>  
+#include<map> 
+#include <list>
+#include <vector>
+#include<iostream> 
+#include <sstream>
+#include <stack>
+using namespace std;
+
+class MaxStack {
+public:
+	/** initialize your data structure here. */
+	list<int> nums;
+	using itr = list<int>::iterator;
+	map<int, stack<itr>, greater<int>> mp;
+	MaxStack() {
+
+	}
+
+	void push(int x) {
+		nums.push_front(x);
+		mp[x].push(nums.begin());
+	}
+
+	int pop() {
+		int val = nums.front();
+		mp[val].pop();
+		if (mp[val].size() == 0)
+			mp.erase(val);
+		nums.pop_front();
+		return val;
+	}
+
+	int top() {
+		return nums.front();
+	}
+	int peekMax() {
+	return mp.begin()->first;
+	}
+
+	int popMax() {
+
+		int val = mp.begin()->first;
+		mp[val].pop();
+		nums.erase(mp[val].top());
+		if (mp[val].size() == 0)
+			mp.erase(val);
+		return val;
+	}
+};

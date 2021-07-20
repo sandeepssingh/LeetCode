@@ -1,0 +1,105 @@
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string> 
+#include<queue>  
+#include<map> 
+#include <list>
+#include <vector>
+#include<iostream> 
+#include <sstream>
+#include <ctype.h> 
+#include <iterator> 
+#include <deque> 
+#include <algorithm> 
+#include<map> 
+#include <cstring>
+#include <unordered_set> 
+#include <set> 
+#include <unordered_map> 
+#include <regex>
+#include <stack> 
+#include <numeric> 
+struct DoubleListNode {
+	int key;
+	int val;
+	DoubleListNode *next;
+	DoubleListNode *prev;
+	DoubleListNode() {}
+	DoubleListNode(int key, int val) :key(key), val(val), next(NULL) {}
+
+};
+class LRUCache {
+public:
+	DoubleListNode* head;
+	DoubleListNode* tail;
+	int count = 0;
+	int capacity = 0;
+	map<int, DoubleListNode*> dict;
+	LRUCache(int capacity) {
+		capacity = capacity;
+		head = new DoubleListNode();
+		tail = new DoubleListNode();
+		head->next = tail;
+		tail->prev = head;
+	}
+	void RemoveNode(DoubleListNode* node)
+	{
+		DoubleListNode* prev = node->prev;
+		DoubleListNode*next = node->next;
+
+		prev->next = next;
+		if (next != nullptr)
+		{
+			next->prev = prev;
+		}
+	}
+	void AddtoHead(DoubleListNode* node)
+	{
+		// 4 operations are required to add a node in between for an ddl
+		node->next = head->next;
+		// it is important to note that we have to set the prev of node's next as node for doubly linked list
+		// also it's important to check for node.next != null before setting node.next.prev = node
+		if (node->next != nullptr)
+		{
+			node->next->prev = node;
+		}
+		node->prev = head;
+		head->next = node;
+	}
+	int get(int key) {
+
+		if (dict.find(key) != dict.end())
+		{
+			DoubleListNode* node = dict[key];
+			RemoveNode(node);
+			AddtoHead(node);
+			node->val;
+		}
+		return -1;
+	}
+
+	void put(int key, int value) {
+
+		if (dict.find(key) != dict.end())
+		{
+			dict[key]->val = value;
+			get(key);
+		}
+		else {
+			if (count == capacity)
+			{
+
+				dict.erase(tail->prev->key);
+				RemoveNode(tail->prev);
+				count--;
+			}
+
+			DoubleListNode* node = new DoubleListNode(key, value);
+			dict[key] = node;
+			AddtoHead(node);
+			count++;
+		}
+
+	}
+};
